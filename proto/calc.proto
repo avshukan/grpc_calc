@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "io.grpc.examples.helloworld";
+option java_outer_classname = "HelloWorldProto";
+option objc_class_prefix = "HLW";
+
+package calc;
+
+service Calc {
+  rpc GetSum (TwoArgs) returns (Sum) {}
+  rpc GetDiv (TwoArgs) returns (Div) {}
+}
+
+message TwoArgs {
+  int32 one = 1;
+  int32 two = 2;
+}
+
+message Sum {
+  int32 sum = 1;
+}
+
+message Div {
+  float div = 1;
+}

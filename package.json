@@ -1,0 +1,26 @@
+{
+  "name": "grpc_calc",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/avshukan/grpc_calc.git"
+  },
+  "keywords": [
+    "grpc"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/avshukan/grpc_calc/issues"
+  },
+  "homepage": "https://github.com/avshukan/grpc_calc#readme",
+  "dependencies": {
+    "@grpc/grpc-js": "^1.8.11",
+    "@grpc/proto-loader": "^0.7.5"
+  }
+}
