@@ -1,26 +1,31 @@
 syntax = "proto3";
 
-option java_multiple_files = true;
-option java_package = "io.grpc.examples.helloworld";
-option java_outer_classname = "HelloWorldProto";
-option objc_class_prefix = "HLW";
-
 package calc;
 
-service Calc {
-  rpc GetSum (TwoArgs) returns (Sum) {}
-  rpc GetDiv (TwoArgs) returns (Div) {}
+enum Operation {
+  ADDITION = 0;
+  SUBTRACTION = 1;
+  MULTIPLICATION = 2;
+  DIVISION = 3;
 }
 
-message TwoArgs {
-  int32 one = 1;
-  int32 two = 2;
+message CalculationRequest {
+  double operand1 = 1;
+  double operand2 = 2;
+  Operation operation = 3;
 }
 
-message Sum {
-  int32 sum = 1;
+message CalculationResponse {
+  double result = 1;
 }
 
-message Div {
-  float div = 1;
+message ErrorResponse {
+  string error_message = 1;
+}
+
+service Calculator {
+  rpc Calculate(CalculationRequest) returns (oneof response {
+    CalculationResponse result = 1;
+    ErrorResponse error = 2;
+  }) {}
 }
