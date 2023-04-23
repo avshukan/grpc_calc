@@ -1,8 +1,10 @@
-var PROTO_PATH = __dirname + '/../proto/calc.proto';
+const grpc = require('@grpc/grpc-js');
+const protoLoader = require('@grpc/proto-loader');
 
-var grpc = require('@grpc/grpc-js');
-var protoLoader = require('@grpc/proto-loader');
-var packageDefinition = protoLoader.loadSync(
+const PROTO_PATH = __dirname + '/../proto/calc.proto';
+
+
+const packageDefinition = protoLoader.loadSync(
     PROTO_PATH,
     {
         keepCase: true,
@@ -11,21 +13,29 @@ var packageDefinition = protoLoader.loadSync(
         defaults: true,
         oneofs: true
     });
-var calc_proto = grpc.loadPackageDefinition(packageDefinition).calc;
 
-/**
- * Starts an RPC server that receives requests for the Greeter service at the sample server port
- */
-function main() {
-    var client = new grpc.Client();
-    client.
-        server.addService(calc_proto.Calc.service, {
-            GetDiv: GetDiv,
-            GetSum: GetSum
-        });
-    server.bindAsync('0.0.0.0:50051', grpc.ServerCredentials.createInsecure(), () => {
-        server.start();
-    });
-}
+// Создание gRPC клиента
+const calculatorProto = grpc.loadPackageDefinition(packageDefinition)
+const client = new calculatorProto.Calc('localhost:50051', grpc.credentials.createInsecure());
 
-main();
+// Операнды и операция
+const operand1 = 10;
+const operand2 = 3;
+const operation = 'DIVISION';
+
+// Создание запроса
+const request = { operand1, operand2, operation };
+console.count();
+console.log('client', client)
+
+// Вызов метода Calculate
+client.Calculate(request, (error, response) => {
+    console.count();
+    if (error) {
+        console.error(error);
+    } else if (response.error) {
+        console.error(response.error);
+    } else {
+        console.log(response.result);
+    }
+});
