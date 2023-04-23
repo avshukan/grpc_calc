@@ -1,8 +1,9 @@
-var PROTO_PATH = __dirname + '/../proto/calc.proto';
+const grpc = require('@grpc/grpc-js');
+const protoLoader = require('@grpc/proto-loader');
 
-var grpc = require('@grpc/grpc-js');
-var protoLoader = require('@grpc/proto-loader');
-var packageDefinition = protoLoader.loadSync(
+const PROTO_PATH = __dirname + '/../proto/calc.proto';
+
+const packageDefinition = protoLoader.loadSync(
     PROTO_PATH,
     {
         keepCase: true,
@@ -11,26 +12,48 @@ var packageDefinition = protoLoader.loadSync(
         defaults: true,
         oneofs: true
     });
-var calc_proto = grpc.loadPackageDefinition(packageDefinition).calc;
 
-function GetSum(call, callback) {
-    const { one, two } = call.request;
-    callback(null, { sum: one + two });
+const calculatorProto = grpc.loadPackageDefinition(packageDefinition);
+
+function Calculate(call, callback) {
+    const { operand1, operand2, operation } = call.request;
+
+    let result;
+    let error;
+
+    switch (operation) {
+        case "ADDITION":
+            result = operand1 + operand2;
+            break;
+        case "SUBTRACTION":
+            result = operand1 - operand2;
+            break;
+        case "MULTIPLICATION":
+            result = operand1 * operand2;
+            break;
+        case "DIVISION":
+            if (operand2 === 0) {
+                error = 'Cannot divide by zero';
+                break;
+            }
+            result = operand1 / operand2;
+            break;
+        default:
+            error = 'Invalid operation';
+            break;
+    }
+
+    if (error) {
+        callback(null, { error });
+    } else {
+        callback(null, { result });
+    }
 }
 
-function GetDiv(call, callback) {
-    const { one, two } = call.request;
-    callback(null, { div: one / two });
-}
-
-/**
- * Starts an RPC server that receives requests for the Greeter service at the sample server port
- */
 function main() {
-    var server = new grpc.Server();
-    server.addService(calc_proto.Calc.service, {
-        GetDiv: GetDiv,
-        GetSum: GetSum
+    const server = new grpc.Server();
+    server.addService(calculatorProto.Calc.service, {
+        Calculate: Calculate
     });
     server.bindAsync('0.0.0.0:50051', grpc.ServerCredentials.createInsecure(), () => {
         server.start();
