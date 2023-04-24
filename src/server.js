@@ -16,7 +16,6 @@ const packageDefinition = protoLoader.loadSync(
 const calculatorProto = grpc.loadPackageDefinition(packageDefinition);
 
 function Calculate(call, callback) {
-    console.count();
     const { operand1, operand2, operation } = call.request;
 
     let result;
@@ -43,13 +42,12 @@ function Calculate(call, callback) {
             error = 'Invalid operation';
             break;
     }
-    console.log(result, error)
+
     if (error) {
         callback(null, { error });
     } else {
         callback(null, { result });
     }
-    console.count();
 }
 
 function main() {

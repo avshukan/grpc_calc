@@ -25,12 +25,9 @@ const operation = 'DIVISION';
 
 // Создание запроса
 const request = { operand1, operand2, operation };
-console.count();
-console.log('client', client)
 
 // Вызов метода Calculate
 client.Calculate(request, (error, response) => {
-    console.count();
     if (error) {
         console.error(error);
     } else if (response.error) {
