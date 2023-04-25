@@ -3,7 +3,6 @@ const protoLoader = require('@grpc/proto-loader');
 
 const PROTO_PATH = __dirname + '/../proto/calc.proto';
 
-
 const packageDefinition = protoLoader.loadSync(
     PROTO_PATH,
     {
@@ -18,21 +17,28 @@ const packageDefinition = protoLoader.loadSync(
 const calculatorProto = grpc.loadPackageDefinition(packageDefinition)
 const client = new calculatorProto.Calc('localhost:50051', grpc.credentials.createInsecure());
 
-// Операнды и операция
-const operand1 = 10;
-const operand2 = 3;
-const operation = 'DIVISION';
+const getRnd = (N) => Math.floor(N * Math.random());
 
-// Создание запроса
-const request = { operand1, operand2, operation };
+for (let i = 0; i < 10; i += 1) {
 
-// Вызов метода Calculate
-client.Calculate(request, (error, response) => {
-    if (error) {
-        console.error(error);
-    } else if (response.error) {
-        console.error(response.error);
-    } else {
-        console.log(response.result);
-    }
-});
+    // Операнды и операция
+    const operand1 = getRnd(3);
+    const operand2 = getRnd(3);
+    const operation = getRnd(4);
+
+    // Создание запроса
+    const request = { operand1, operand2, operation }
+
+    // Вызов метода Calculate
+    client.Calculate(request, (error, response) => {
+        console.log(`Sending ${JSON.stringify(request)}`)
+
+        if (error) {
+            console.error(error);
+        } else if (response.error) {
+            console.error(response.error);
+        } else {
+            console.log(response.result);
+        }
+    })
+}
